@@ -10,8 +10,8 @@ const Earnings = () => {
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6 w-full">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Earnings Overview</h2>
+    <div className="bg-white rounded-2xl shadow p-6 min-w-0">
+      <h2 className="text-xl font-semibold text-gray-00 mb-4">Earnings Overview</h2>
       <div className="space-y-4">
         {data.map((item, idx) => (
           <div key={idx} className="flex items-center justify-between">

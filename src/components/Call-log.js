@@ -2,14 +2,14 @@
 import React, {useState, useEffect} from "react";
 
 const Calls = () => {
-  const [logs, setLogs] = useState();
-  const [loading, isLoading] = useState();
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
     const fetchLogs = async () => {
       try {
-        const res = await fetch('/api/call-logs/');
+        const res = await fetch('/api/call-logs');
         const data = await res.json();
         //the data keyname is coming from hard-code, will change based on actual API call response
         setLogs(data.interactions);
@@ -17,7 +17,7 @@ const Calls = () => {
       } catch(err) {
         console.error('failed to fetch call logs', err)
       } finally {
-        isLoading(false);
+        setLoading(false);
       }
     }
     fetchLogs();
@@ -26,22 +26,22 @@ const Calls = () => {
     return <p className="text-center text-gray-500">Loading call logs...</p>
   }
   return (
-    <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4 w-full">
+    <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4 min-w-0">
       <h2 className= "text-lg font semibold text-gray-700 mb-4">Call Logs</h2>
-      <table className= "minw-full text-sm text-left text-gray-600">
-        <thead className="big-gray-100 text-xs uppercase text-gray-500">
+      <table className= "text-sm text-left text-gray-600">
+        <thead className="bg-gray-100 text-xs uppercase text-gray-500">
           {/* these table headers will changed based on the product being used  */}
           <tr>
-            <th className="px--4 py-2">Agent</th>
-            <th className="px--4 py-2">Queue</th>
-            <th className="px--4 py-2">Start Time</th>
-            <th className="px--4 py-2">End Time</th>
-            <th className="px--4 py-2">Duration</th>
-            <th className="px--4 py-2">Recording</th>
+            <th className="px-4 py-2">Agent</th>
+            <th className="px-4 py-2">Queue</th>
+            <th className="px-4 py-2">Start Time</th>
+            <th className="px-4 py-2">End Time</th>
+            <th className="px-4 py-2">Duration</th>
+            <th className="px-4 py-2">Recording</th>
           </tr>
           </thead>
           <tbody>
-            {logs.map((log) => {
+            {logs.map((log) => (
               <tr key={log.id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">{log.agent_name}</td>
                 <td className="px-4 py-2">{log.queue_name}</td>
@@ -61,7 +61,7 @@ const Calls = () => {
                   ) : ('N/A')}
                 </td>
               </tr>
-            })}
+            ))}
           </tbody>
       </table>
     </div>
