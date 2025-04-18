@@ -3,7 +3,8 @@
 import Earnings from "@/components/Earnings";
 import Calls from "@/components/Call-log";
 import Sidebar from "@/components/Sidebar";
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/components/Searchbar";
+import SmartEmbed from "@/components/SmartEmbed";
 
 const HomePage = () => {
   return (
@@ -19,8 +20,10 @@ const HomePage = () => {
         <main className="flex flex-col space-y-8 ml-0 w-[800px]">
           <Earnings />
           <Calls />
+         
         </main>
       </div>
+      <div> <SmartEmbed /></div>
     </div>
   );
 }
