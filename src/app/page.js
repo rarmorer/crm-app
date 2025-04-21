@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/Searchbar";
 import SmartEmbed from "@/components/SmartEmbed";
 
+
 const HomePage = () => {
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -15,15 +16,15 @@ const HomePage = () => {
         <div className="w-full max-w-[500px] mb-6 ml-0">
           <SearchBar />
         </div>
-        
         {/* Main Content Area */}
         <main className="flex flex-col space-y-8 ml-0 w-[800px]">
           <Earnings />
-          <Calls />
-         
+          <Calls />         
         </main>
       </div>
-      <div> <SmartEmbed /></div>
+      <div className="w-[420px] h-full overflow-hidden bg-white border-l border-gray-200 p-4">
+        <SmartEmbed />
+      </div>
     </div>
   );
 }
