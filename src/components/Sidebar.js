@@ -9,18 +9,18 @@ import {
 import Link from 'next/link';
 
 const navItems = [
-  { label: 'Dashboard', icon: HomeIcon, href: '#' },
-  { label: 'Accounts', icon: UserGroupIcon, href: '#' },
+  { label: 'Dashboard', icon: HomeIcon, href: '/' },
+  { label: 'Accounts', icon: UserGroupIcon, href: '/accounts' },
   { label: 'Call Log', icon: PhoneIcon, href: '#' },
-  { label: 'Instructions', icon: InformationCircleIcon, href: '#' },
+  { label: 'Instructions', icon: InformationCircleIcon, href: '/README.md' },
 ];
 
 const Sidebar = () => {
   return (
     <aside className="h-screen w-64 bg-white shadow-lg flex flex-col">
-      <div className="p-6 text-xl font-bold text-blue-600">My CRM</div>
+      <div className="pt-6 pl-6 text-xl font-bold text-blue-600">My CRM</div>
 
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 pl-6 pt-4 pr-4 space-y-2">
         {navItems.map((item) => (
           <Link
             key={item.label}
@@ -33,7 +33,7 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <div className="p-4 text-sm text-gray-400 border-t">
+      <div className="pl-6 pr-4 pb-4 text-sm text-gray-400 border-t">
         &copy; 2025 Your Company
       </div>
     </aside>
