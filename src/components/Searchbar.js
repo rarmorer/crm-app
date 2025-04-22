@@ -5,19 +5,26 @@ import { useState } from 'react';
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
 
+    setIsLoading(true);
+    setError(null);
+
     try {
-      // const res = await fetch(`/api/search-address-book?q=${encodeURIComponent(query)}`); the dynamic search
-      const res = await fetch('/api/search?q=Jane');      
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       setResults(data.contacts || []);
-      console.log(results)
+      console.log(data.contacts || []);
     } catch (err) {
       console.error('Search failed:', err);
+      setError('Search failed. Please try again.');
       setResults([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -46,14 +53,26 @@ const SearchBar = () => {
           Search
         </button>
       </div>
-      {results.length > 0 && (
-        <ul className="mt-2 bg-white border rounded-xl shadow p-2 space-y-1">
+
+      {isLoading && <div className="text-center py-4">Searching...</div>}
+
+      {error && <div className="text-center py-4 text-red-500">{error}</div>}
+
+      {!isLoading && !error && results.length > 0 && (
+        <div>
           {results.map((contact) => (
-            <li key={contact.id} className="text-sm text-gray-700">
-              {contact.name} — {contact.phone_number}
-            </li>
+            <div key={contact.id} className="border-b p-3 hover:bg-gray-50">
+              <div className="font-medium">{contact.name}</div>
+              <div className="text-sm text-gray-500">{contact.phone_number}</div>
+            </div>
           ))}
-        </ul>
+        </div>
+      )}
+
+      {!isLoading && !error && query && results.length === 0 && (
+        <div className="text-center py-4 text-gray-500">
+          No users found. Try again.
+        </div>
       )}
     </div>
   );
