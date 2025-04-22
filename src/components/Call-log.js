@@ -10,8 +10,8 @@ const Calls = () => {
       try {
         const res = await fetch('/api/call-logs');
         const data = await res.json();
-        console.log('raw api response', data);
-        //added or operator to avoid rendering errors when working with dummy token
+  
+
         setLogs(data.interactions || []);
       } catch(err) {
         console.error('failed to fetch call logs', err);

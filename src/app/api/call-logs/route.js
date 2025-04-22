@@ -1,23 +1,39 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
+
 export async function GET(request) {
-  // Replace with your actual token (ideally, use environment variables)
-  const ZOOM_ACCESS_TOKEN = "eyJzdiI6IjAwMDAwMiIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjZiZTMwZTUzLTI0ZDktNGM0Ny05MWQzLTlmZGEwYjE0ZjY1MCJ9.eyJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiI2R3RkaGVaUVNxLWwySmxGVzZ2TEZ3IiwidmVyIjoxMCwiYXVpZCI6IjkxZDFmN2U4YTMwODc1ZGI0NTQzZjE5MWM2ZTM3NWRjOGUyMjg5NjI2MjJiNTZkNmQ3MDY0NzEyMzJlMGQ4ZDYiLCJuYmYiOjE3NDQ5OTAwODYsImNvZGUiOiJHcjNQaGFoVFIzdTlJQUdRUW16RE5naWw2a2lLcm1HMjAiLCJpc3MiOiJ6bTpjaWQ6UnFUcGFiV3pRUXl0VmxWc1VKSDY2dyIsImdubyI6MCwiZXhwIjoxNzQ0OTkzNjg2LCJ0eXBlIjozLCJpYXQiOjE3NDQ5OTAwODYsImFpZCI6ImxLaGtWSWpOU3V5bGhDUkhzN25aencifQ.x5woxkv92iJeM_vkAcMF4DEJE5nZh63K4MbBhvc38Kq0vopRTUCmgqMjR6zOX390P5HDi4vRU60tUSJthk0txA"
+  // Get the session which contains the access token
+  const session = await getServerSession(authOptions);
+  
+  if (!session || !session.accessToken) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  
+  // Use the access token to call Zoom API
   try {
-    const response = await fetch('https://api.zoom.us/v2/phone/call_history?from=2025-03-01&to=2025-03-31', {
+    const zoomResponse = await fetch('https://api.zoom.us/v2/phone/call_history?from=2025-04-01&to=2025-04-20', {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${ZOOM_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${session.accessToken}`,
         'Content-Type': 'application/json'
       }
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Zoom API error: ${response.status} - ${errText}`);
+    // Check if response is not OK before trying to parse the body
+    if (!zoomResponse.ok) {
+      const errorText = await zoomResponse.text();
+      throw new Error(`Zoom API error: ${zoomResponse.status} - ${errorText}`);
     }
 
-    const data = await response.json();
+    // Only try to parse JSON if the response was OK
+    const data = await zoomResponse.json();
+   
+    // Check if call_logs exists in the response
+    if (!data.call_logs) { 
+      throw new Error('Unexpected API response structure');
+    }
     
-    // Example: structure the data to match your frontend expectations
+    // Process and return the data
     const formatted = data.call_logs.map(log => ({
       id: log.id,
       agent_name: log.owner_name || 'N/A',
