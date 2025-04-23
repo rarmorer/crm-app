@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 // import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import SmartEmbed from "@/components/SmartEmbed";
 // import Footer from "../components/Footer";
 
 const geistSans = Geist({
@@ -26,10 +27,22 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+           <div className="flex w-screen h-screen overflow-x-hidden">
+        <div className="w-[200px] shrink-0">
+        <Sidebar />
+        </div>
+        <div className="flex-1 min-w-0">
         <AuthProvider>
-          {children}
+          <main>{children}</main>
         </AuthProvider>
+        </div>
+        <div className="w-[420px] h-full overflow-hidden bg-white border-l border-gray-200 p-4">
+        <SmartEmbed />
+      </div>
+        </div>
       </body>
     </html>
   );
 }
+
+

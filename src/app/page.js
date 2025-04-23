@@ -10,7 +10,6 @@ import EventLog from "@/components/EventLog";
 const HomePage = () => {
   return (
     <div className="flex h-screen w-screen overflow-hidden">
-      <Sidebar />
       <div className="flex-1 flex flex-col overflow-y-auto px-8 py-6 bg-gray-50">
         {/* Search Bar - same width as content and aligned to top */}
         <div className="w-full max-w-[500px] mb-6 ml-0">
@@ -22,9 +21,6 @@ const HomePage = () => {
           <Calls />  
           <EventLog />
         </main>
-      </div>
-      <div className="w-[420px] h-full overflow-hidden bg-white border-l border-gray-200 p-4">
-        <SmartEmbed />
       </div>
     </div>
   );

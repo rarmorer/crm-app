@@ -11,7 +11,7 @@ export async function GET(request) {
   
   // Use the access token to call Zoom API
   try {
-    const zoomResponse = await fetch('https://api.zoom.us/v2/phone/call_history?from=2025-04-01&to=2025-04-20', {
+    const zoomResponse = await fetch('https://api.zoom.us/v2/phone/call_history?from=2025-04-01&to=2025-04-23', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${session.accessToken}`,
