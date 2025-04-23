@@ -1,36 +1,42 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust if needed
 
-export async function GET(req) {
-  const data = {
-    page_size: 3,
-    next_page_token: '',
-    total_records: 3,
-    contacts: [
-      {
-        id: '1',
-        name: 'Acme Corp',
-        email: 'contact@acme.com',
-        phone_number: '+1234567890',
-        status: 'Active',
-      },
-      {
-        id: '2',
-        name: 'Beta LLC',
-        email: 'info@beta.com',
-        phone_number: '+1987654321',
-        status: 'Inactive',
-      },
-      {
-        id: '3',
-        name: 'Delta Inc',
-        email: 'support@delta.com',
-        phone_number: '+1122334455',
-        status: 'Active',
-      },
-    ],
-  };
+export async function GET(request) {
+  try {
+    const session = await getServerSession(authOptions);
 
-  return new Response(JSON.stringify(data.contacts), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+    if (!session || !session.accessToken) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const response = await fetch('https://api.zoom.us/v2/phone/users', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`Zoom API error: ${response.status}`, errText);
+      throw new Error(`Zoom API error: ${response.status} - ${errText}`);
+    }
+
+    const data = await response.json();
+
+    const filteredUsers = data.users || []
+
+    const results = filteredUsers.map(user => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      status: user.status
+    }));
+
+    return Response.json({accounts: results}); 
+  } catch (error) {
+    console.error('Search error:', error);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 }
