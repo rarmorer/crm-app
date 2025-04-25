@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
-import ZoomProvider from "next-auth/providers/zoom";
+import  ZoomProvider  from "next-auth/providers/zoom";
 
-// Next has a Next-auth function that supports Zoom OAuth so we just need to pass clied ID and secret from our app
 export const authOptions = {
   providers: [
     ZoomProvider({
@@ -9,37 +8,77 @@ export const authOptions = {
       clientSecret: process.env.ZOOM_CLIENT_SECRET,
     }),
   ],
-  pages: {
-    signIn: "/auth/signin",
-  },
-  // Tells NextAuth to use JWT tokens to manage session data instead of storing sessions in a database
-  // Set shorter session lifetime
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60, // 1 hour instead of the default 30 days
-  },
-  // Keep debug mode for development
-  debug: process.env.NODE_ENV === "development",
-  // Add these callbacks
   callbacks: {
-    async jwt({ token, account }) {
-      console.log("JWT Callback - Account:", !!account);
-      // Only update token if account exists (user explicitly authenticated)
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-        token.expiresAt = account.expires_at;
+    async jwt({ token, account, user }) {
+      // Initial sign in
+      if (account && user) {
+        return {
+          accessToken: account.access_token,
+          accessTokenExpires: account.expires_at * 1000, // Convert to milliseconds
+          refreshToken: account.refresh_token,
+          user,
+        };
       }
-      return token;
+
+      // Return previous token if the access token has not expired yet
+      if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
+        return token;
+      }
+
+      // Access token has expired, try to refresh it
+      return refreshAccessToken(token);
     },
     async session({ session, token }) {
-      console.log("Session Callback - Token exists:", !!token);
-      // Only set session properties if token exists
-      if (token) {
-        session.accessToken = token.accessToken;
-      }
+      session.user = token.user;
+      session.accessToken = token.accessToken;
+      session.error = token.error;
+      
       return session;
     },
   },
-};const handler = NextAuth(authOptions);
+  secret: process.env.NEXTAUTH_SECRET,
+};
+
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
+async function refreshAccessToken(token) {
+  try {
+    const url = "https://zoom.us/oauth/token";
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${Buffer.from(`${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`).toString("base64")}`,
+      },
+      method: "POST",
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: token.refreshToken,
+      }),
+    });
+
+    const refreshedTokens = await response.json();
+
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
+
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+    };
+  } catch (error) {
+    console.error("RefreshAccessTokenError", error);
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
+
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

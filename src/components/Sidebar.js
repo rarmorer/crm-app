@@ -11,7 +11,7 @@ import Link from 'next/link';
 const navItems = [
   { label: 'Dashboard', icon: HomeIcon, href: '/' },
   { label: 'Accounts', icon: UserGroupIcon, href: '/accounts' },
-  { label: 'Call Log', icon: PhoneIcon, href: '#' },
+  { label: 'Call Logs', icon: PhoneIcon, href: '/call-logs' },
   { label: 'Instructions', icon: InformationCircleIcon, href: '/README.md' },
 ];
 

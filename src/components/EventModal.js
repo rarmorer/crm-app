@@ -7,6 +7,7 @@ const EventModal = ({ log, index, onClose }) => {
 
   const { eventType, data } = log;
   const callId = data?.data?.callId || "N/A";
+  const callLogId = data?.data?.callLogId || "N/A";
   const direction = data?.data?.direction || "N/A";
   const caller = data?.data?.caller?.name || "Unknown";
 
@@ -27,6 +28,7 @@ const EventModal = ({ log, index, onClose }) => {
       <ul className="text-sm text-gray-700 space-y-1">
         <li><strong>Event:</strong> {eventType}</li>
         <li><strong>Call ID:</strong> {callId}</li>
+        <li><strong>Call log ID:</strong> {callLogId}</li>
         <li><strong>Direction:</strong> {direction}</li>
         <li><strong>Caller:</strong> {caller}</li>
       </ul>

@@ -1,5 +1,6 @@
 "use client"
 import React, {useState, useEffect} from "react";
+import { isToday } from "date-fns";
 
 const Calls = () => {
   const [logs, setLogs] = useState([]);
@@ -11,8 +12,13 @@ const Calls = () => {
         const res = await fetch('/api/call-logs');
         const data = await res.json();
   
+        // Filter logs that are from today
+      const todayLogs = (data.interactions || []).filter(log => {
+        const startTime = new Date(log.start_time);
+        return isToday(startTime);
+      });
 
-        setLogs(data.interactions || []);
+        setLogs(todayLogs);
       } catch(err) {
         console.error('failed to fetch call logs', err);
       } finally {
@@ -28,7 +34,7 @@ const Calls = () => {
   
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4 min-w-0">
-      <h2 className="text-lg font-semibold text-gray-700 mb-4">Call Logs</h2>
+      <h2 className="text-lg font-semibold text-gray-700 mb-4">Daily Call Logs</h2>
       <table className="text-sm text-left text-gray-600">
         <thead className="bg-gray-100 text-xs uppercase text-gray-500">
           <tr>

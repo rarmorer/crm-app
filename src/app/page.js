@@ -19,7 +19,7 @@ const HomePage = () => {
         <main className="flex flex-col space-y-8 ml-0 w-[800px]">
           <Earnings />
           <Calls />  
-          <EventLog />
+  
         </main>
       </div>
     </div>

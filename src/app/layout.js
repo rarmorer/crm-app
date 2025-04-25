@@ -4,6 +4,7 @@ import "./globals.css";
 // import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import SmartEmbed from "@/components/SmartEmbed";
+import EventLog from "@/components/EventLog";
 // import Footer from "../components/Footer";
 
 const geistSans = Geist({
@@ -28,10 +29,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
            <div className="flex w-screen h-screen overflow-x-hidden">
-        <div className="w-[200px] shrink-0">
+           <div className="w-[200px] shrink-0">
         <Sidebar />
         </div>
         <div className="flex-1 min-w-0">
+          <EventLog />
         <AuthProvider>
           <main>{children}</main>
         </AuthProvider>

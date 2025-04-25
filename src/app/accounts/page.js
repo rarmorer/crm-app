@@ -1,6 +1,27 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import { PhoneIcon } from '@heroicons/react/24/solid';
+
+
+// Function to make a call using Zoom Smart Embed
+export const makeCall = (phoneNumber, callerId) => {
+  const iframe = document.querySelector('iframe#zoom-embeddable-phone-iframe');
+  if (iframe && iframe.contentWindow) {
+    const message = {
+      type: 'zp-make-call',
+      data: {
+        number: phoneNumber, // The phone number you want to dial
+        callerId: callerId, // The caller ID (optional)
+        autoDial: true // Whether to dial automatically, default is true
+      }
+    };
+    // Send the message to the iframe
+    iframe.contentWindow.postMessage(message, 'https://applications.zoom.us');
+  } else {
+    console.error('Iframe or contentWindow not ready. Cannot make call.');
+  }
+};
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -36,28 +57,35 @@ const Accounts = () => {
               <th className="px-4 py-3 border-b">ID</th>
               <th className="px-4 py-3 border-b">Name</th>
               <th className="px-4 py-3 border-b">Email</th>
+              <th className="px-4 py-3 border-b">Phone Number</th>
               <th className="px-4 py-3 border-b">Status</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
-            {accounts.map((account) => (
-              <tr key={account.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3 border-b">{account.id}</td>
-                <td className="px-4 py-3 border-b font-medium">{account.name}</td>
-                <td className="px-4 py-3 border-b text-gray-500">{account.email}</td>
-                <td className="px-4 py-3 border-b">
-                  <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${account.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {account.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {accounts.map((account) => (
+    <tr key={account.id} className="hover:bg-gray-50 transition-colors">
+      <td className="px-4 py-3 border-b">{account.id}</td>
+      <td className="px-4 py-3 border-b font-medium">{account.name}</td>
+      <td className="px-4 py-3 border-b text-gray-500">{account.email}</td>
+      <td
+        className="px-4 py-3 border-b text-gray-500 cursor-pointer hover:text-blue-500 transition"
+        onClick={() => makeCall(account.phoneNumber)}
+      >
+        {account.phoneNumber}
+      </td>
+      <td className="px-4 py-3 border-b">
+        <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${account.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+          {account.status}
+        </span>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
     </div>
   );
-  
 }
 
 export default Accounts;
