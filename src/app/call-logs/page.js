@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { formatISO } from "date-fns";
+import { formatISO, format } from "date-fns";
 
 const CallLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -20,7 +20,7 @@ const CallLogs = () => {
       const res = await fetch(url);
       const data = await res.json();
 
-      setLogs(data.interactions || []);
+      setLogs(Array.isArray(data.interactions) ? data.interactions : []);
     } catch (err) {
       console.error("Failed to fetch call logs", err);
     } finally {
@@ -87,11 +87,11 @@ const CallLogs = () => {
             </thead>
             <tbody className="text-gray-700">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={log.id || `${log.agent_name}-${log.start_time}`} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 border-b">{log.agent_name}</td>
                   <td className="px-4 py-3 border-b">{log.queue_name}</td>
-                  <td className="px-4 py-3 border-b">{new Date(log.start_time).toLocaleString()}</td>
-                  <td className="px-4 py-3 border-b">{new Date(log.end_time).toLocaleString()}</td>
+                  <td className="px-4 py-3 border-b">{log.start_time ? format(new Date(log.start_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
+                  <td className="px-4 py-3 border-b">{log.end_time ? format(new Date(log.end_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
                   <td className="px-4 py-3 border-b">{Math.floor(log.duration / 60)} min</td>
                   <td className="px-4 py-3 border-b">
                     {log.recording_url ? (

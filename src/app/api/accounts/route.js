@@ -31,7 +31,7 @@ export async function GET(request) {
       id: user.id,
       name: user.name,
       email: user.email,
-      phoneNumber: user.phone_numbers[0].number,
+      phoneNumber: user.phone_numbers && user.phone_numbers.length > 0 ? user.phone_numbers[0].number : 'No phone number',
       status: user.status
     }));
 
