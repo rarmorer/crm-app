@@ -1,47 +1,63 @@
-export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const query = searchParams.get('q');
-  console.log('Query received:', query);
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
 
-  const ZOOM_ACCESS_TOKEN="eyJzdiI6IjAwMDAwMiIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjZiZTMwZTUzLTI0ZDktNGM0Ny05MWQzLTlmZGEwYjE0ZjY1MCJ9.eyJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiI2R3RkaGVaUVNxLWwySmxGVzZ2TEZ3IiwidmVyIjoxMCwiYXVpZCI6IjkxZDFmN2U4YTMwODc1ZGI0NTQzZjE5MWM2ZTM3NWRjOGUyMjg5NjI2MjJiNTZkNmQ3MDY0NzEyMzJlMGQ4ZDYiLCJuYmYiOjE3NDQ5OTAwODYsImNvZGUiOiJHcjNQaGFoVFIzdTlJQUdRUW16RE5naWw2a2lLcm1HMjAiLCJpc3MiOiJ6bTpjaWQ6UnFUcGFiV3pRUXl0VmxWc1VKSDY2dyIsImdubyI6MCwiZXhwIjoxNzQ0OTkzNjg2LCJ0eXBlIjozLCJpYXQiOjE3NDQ5OTAwODYsImFpZCI6ImxLaGtWSWpOU3V5bGhDUkhzN25aencifQ.x5woxkv92iJeM_vkAcMF4DEJE5nZh63K4MbBhvc38Kq0vopRTUCmgqMjR6zOX390P5HDi4vRU60tUSJthk0txA"
-    return new Response(JSON.stringify({ error: 'Missing search query' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+export async function GET(request) {
+  // Get the session which contains the access token
+  const session = await getServerSession(authOptions);
+  
+  if (!session || !session.accessToken) {
+    return Response.json({ error: "Not authenticated" }, { status: 401 });
   }
-
+  
+  // Check if there was an error refreshing the token
+  if (session.error === "RefreshAccessTokenError") {
+    return Response.json({ error: "Your session has expired. Please sign in again." }, { status: 401 });
+  }
+  
+  const {searchParams} = new URL(request.url);
+  const query = searchParams.get('q');
+  
+  if (!query) {
+    return Response.json({ error: "Search query is required" }, { status: 400 });
+  }
+  
   try {
+    // Use the access token to call Zoom API
     const response = await fetch('https://api.zoom.us/v2/phone/users', {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${ZOOM_ACCESS_TOKEN}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.accessToken}`,
+        'Content-Type': 'application/json'
       }
     });
 
     if (!response.ok) {
+      // Handle specific error cases
+      if (response.status === 401) {
+        // Token might still be invalid despite refresh attempt
+        return Response.json({ error: "API authorization failed. Please sign in again." }, { status: 401 });
+      }
+      
       const errText = await response.text();
+      console.error(`Zoom API error: ${response.status}`, errText);
       throw new Error(`Zoom API error: ${response.status} - ${errText}`);
     }
 
     const data = await response.json();
-    
-    // Mocked Zoom contact data
-    const contacts = data.users.map(user => ({
-      id: user.id,
-      name: user.name,
-      phone_number: user.phone_numbers?.[0]?.number || null,
-    }));
-    // Very basic filtering by name
-    const filtered = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(query.toLowerCase())
+     // Filter users based on the search query
+     const filteredUsers = data.users.filter(user => 
+      user.name.toLowerCase().includes(query.toLowerCase())
     );
 
-  return Response.json({ contacts: filtered });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+ 
+    const results = filteredUsers.map(user => ({
+      name: `${user.name}`,
+      phone_number: user.phone_numbers?.[0]?.number || null,
+      // Add other fields as needed
+    }));
+    return Response.json({contacts: results});
+  } catch (err) {
+    console.error('Search error:', err.message);
+    return Response.json({ error: err.message }, { status: 500 });
   }
 }

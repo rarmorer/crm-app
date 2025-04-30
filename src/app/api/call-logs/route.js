@@ -1,23 +1,52 @@
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "../auth/[...nextauth]/route"
+
 export async function GET(request) {
-  // Replace with your actual token (ideally, use environment variables)
-  const ZOOM_ACCESS_TOKEN = "eyJzdiI6IjAwMDAwMiIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjZiZTMwZTUzLTI0ZDktNGM0Ny05MWQzLTlmZGEwYjE0ZjY1MCJ9.eyJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiI2R3RkaGVaUVNxLWwySmxGVzZ2TEZ3IiwidmVyIjoxMCwiYXVpZCI6IjkxZDFmN2U4YTMwODc1ZGI0NTQzZjE5MWM2ZTM3NWRjOGUyMjg5NjI2MjJiNTZkNmQ3MDY0NzEyMzJlMGQ4ZDYiLCJuYmYiOjE3NDQ5OTAwODYsImNvZGUiOiJHcjNQaGFoVFIzdTlJQUdRUW16RE5naWw2a2lLcm1HMjAiLCJpc3MiOiJ6bTpjaWQ6UnFUcGFiV3pRUXl0VmxWc1VKSDY2dyIsImdubyI6MCwiZXhwIjoxNzQ0OTkzNjg2LCJ0eXBlIjozLCJpYXQiOjE3NDQ5OTAwODYsImFpZCI6ImxLaGtWSWpOU3V5bGhDUkhzN25aencifQ.x5woxkv92iJeM_vkAcMF4DEJE5nZh63K4MbBhvc38Kq0vopRTUCmgqMjR6zOX390P5HDi4vRU60tUSJthk0txA"
+  const session = await getServerSession(authOptions)
+
+  if (!session || !session.accessToken) {
+    return Response.json({ error: "Not authenticated" }, { status: 401 })
+  }
+
+   // Check if there was an error refreshing the token
+   if (session.error === "RefreshAccessTokenError") {
+    return Response.json({ error: "Your session has expired. Please sign in again." }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url)
+  const from = searchParams.get("from") || null
+  const to = searchParams.get("to") || null
+
   try {
-    const response = await fetch('https://api.zoom.us/v2/phone/call_history?from=2025-03-01&to=2025-03-31', {
+    let zoomUrl = 'https://api.zoom.us/v2/phone/call_history'
+    const params = new URLSearchParams()
+    if (from) params.append('from', from)
+    if (to) params.append('to', to)
+    if (params.toString()) zoomUrl += `?${params.toString()}`
+
+    const response = await fetch(zoomUrl, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${ZOOM_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${session.accessToken}`,
         'Content-Type': 'application/json'
       }
-    });
+    })
 
     if (!response.ok) {
+      // Handle specific error cases
+      if (response.status === 401) {
+        // Token might still be invalid despite refresh attempt
+        return Response.json({ error: "API authorization failed. Please sign in again." }, { status: 401 });
+      }
+    
       const errText = await response.text();
+      console.error(`Zoom API error: ${response.status}`, errText);
       throw new Error(`Zoom API error: ${response.status} - ${errText}`);
     }
-
-    const data = await response.json();
     
-    // Example: structure the data to match your frontend expectations
+
+    const data = await response.json()
+  
     const formatted = data.call_logs.map(log => ({
       id: log.id,
       agent_name: log.owner_name || 'N/A',
@@ -26,11 +55,11 @@ export async function GET(request) {
       end_time: log.end_time,
       duration: log.duration,
       recording_url: log.recording_file_path || null
-    }));
+    }))
 
-    return Response.json({ interactions: formatted });
+    return Response.json({ interactions: formatted })
   } catch (err) {
-    console.error('Zoom call logs fetch error:', err.message);
-    return Response.json({ error: 'Failed to fetch call logs' }, { status: 500 });
+    console.error('Zoom call logs fetch error:', err.message)
+    return Response.json({ error: err.message }, { status: 500 })
   }
 }
