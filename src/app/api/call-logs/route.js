@@ -14,8 +14,14 @@ export async function GET(request) {
   }
 
   const { searchParams } = new URL(request.url)
-  const from = searchParams.get("from") || null
-  const to = searchParams.get("to") || null
+  let from = searchParams.get("from");
+  let to = searchParams.get("to");
+
+  if (!from || !to) {
+    const now = new Date();
+    to = now.toISOString().split("T")[0]; // today
+    from = new Date(now.setDate(now.getDate() - 30)).toISOString().split("T")[0]; // 30 days ago
+  }
 
   try {
     let zoomUrl = 'https://api.zoom.us/v2/phone/call_history'

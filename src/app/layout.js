@@ -1,12 +1,12 @@
 import { AuthProvider } from "@/context/auth-context";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import SmartEmbed from "@/components/SmartEmbed";
 import EventLog from "@/components/EventLog";
-// import Footer from "../components/Footer";
+import { CallProvider
 
+ } from "@/context/global-context";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -35,7 +35,9 @@ export default function RootLayout({ children }) {
         <div className="flex-1 min-w-0">
           <EventLog />
         <AuthProvider>
+          <CallProvider>
           <main>{children}</main>
+          </CallProvider>
         </AuthProvider>
         </div>
         <div className="w-[420px] h-full overflow-hidden bg-white border-l border-gray-200 p-4">

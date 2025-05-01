@@ -2,42 +2,34 @@
 
 import React, { useState, useEffect } from "react";
 import { formatISO, format } from "date-fns";
+import { useCall } from "@/context/global-context";
 
 const CallLogs = () => {
+  const { calls } = useCall();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
 
-  const fetchLogs = async (from, to) => {
-    setLoading(true);
-    try {
-      let url = '/api/call-logs';
-      if (from && to) {
-        url += `?from=${from}&to=${to}`;
-      }
-
-      const res = await fetch(url);
-      const data = await res.json();
-
-      setLogs(Array.isArray(data.interactions) ? data.interactions : []);
-    } catch (err) {
-      console.error("Failed to fetch call logs", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleFilter = () => {
     if (fromDate && toDate) {
-      fetchLogs(fromDate, toDate);
+      const from = new Date(fromDate);
+      const to = new Date(toDate);
+      console.log('dates', fromDate, toDate)
+      const filtered = calls.filter((log) => {
+        const logDate = new Date(log.start_time);
+        return logDate >= from && logDate <= to;
+      });
+      setLogs(filtered);
+    } else {
+      setLogs(calls);
     }
   };
 
   useEffect(() => {
-    const today = formatISO(new Date(), { representation: "date" });
-    fetchLogs(today, today); // Load today’s logs on mount
-  }, []);
+    setLogs(calls);
+    setLoading(false);
+  }, [calls]);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">

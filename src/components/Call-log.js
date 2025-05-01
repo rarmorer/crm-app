@@ -1,36 +1,28 @@
 "use client"
 import React, {useState, useEffect} from "react";
 import { isToday } from "date-fns";
+import { useCall } from "@/context/global-context";
 
 const Calls = () => {
   const [logs, setLogs] = useState([]);
+  const {calls, setCalls} = useCall();
+  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const res = await fetch('/api/call-logs');
-        const data = await res.json();
-  
-        // Filter logs that are from today
-      const todayLogs = (data.interactions || []).filter(log => {
-        const startTime = new Date(log.start_time);
-        return isToday(startTime);
-      });
+    const todayLogs = calls.filter(log => {
+      const startTime = new Date(log.start_time);
+      return isToday(startTime);
+    });
 
-        setLogs(todayLogs);
-      } catch(err) {
-        console.error('failed to fetch call logs', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchLogs();
-  }, []);
+    setLogs(todayLogs);
+    setLoading(false);
+  }, [calls]);
   
   if (loading) { 
     return <p className="text-center text-gray-500">Loading call logs...</p>
   }
+
   
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4 min-w-0">
