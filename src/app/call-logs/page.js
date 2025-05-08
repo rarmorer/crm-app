@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { formatISO, format } from "date-fns";
 import { useCall } from "@/context/global-context";
+import CallDetailsModal from "@/components/CallDetailsModal"; // Import the existing component
 
 const CallLogs = () => {
   const { calls } = useCall();
@@ -10,26 +11,47 @@ const CallLogs = () => {
   const [loading, setLoading] = useState(true);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const [selectedCallId, setSelectedCallId] = useState(null); // Add state for selected call ID
 
-  const handleFilter = () => {
+  const handleFilter = async () => {
     if (fromDate && toDate) {
-      const from = new Date(fromDate);
-      const to = new Date(toDate);
-      console.log('dates', fromDate, toDate)
-      const filtered = calls.filter((log) => {
-        const logDate = new Date(log.start_time);
-        return logDate >= from && logDate <= to;
-      });
-      setLogs(filtered);
-    } else {
-      setLogs(calls);
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/call-logs?from=${fromDate}&to=${toDate}`);
+        const data = await res.json();
+        setLogs(data.interactions || []);
+      } catch (err) {
+        console.error("Failed to fetch filtered logs", err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    setLogs(calls);
-    setLoading(false);
-  }, [calls]);
+    const fetchInitialLogs = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/call-logs');
+        const data = await res.json();
+        setLogs(data.interactions || []);
+      } catch (err) {
+        console.error("Failed to load initial logs", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialLogs();
+  }, []);
+
+  // Add handlers for opening and closing the modal
+  const handleCallClick = (callId) => {
+    setSelectedCallId(callId);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCallId(null);
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
@@ -69,6 +91,7 @@ const CallLogs = () => {
           <table className="min-w-full bg-white border border-gray-200 text-sm text-left rounded-lg overflow-hidden">
             <thead className="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
               <tr>
+                <th className="px-4 py-3 border-b">Call ID</th>
                 <th className="px-4 py-3 border-b">Agent</th>
                 <th className="px-4 py-3 border-b">Queue</th>
                 <th className="px-4 py-3 border-b">Start Time</th>
@@ -80,6 +103,14 @@ const CallLogs = () => {
             <tbody className="text-gray-700">
               {logs.map((log) => (
                 <tr key={log.id || `${log.agent_name}-${log.start_time}`} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-3 border-b">
+                    <button 
+                      onClick={() => handleCallClick(log.id)}
+                      className="text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+                    >
+                      {log.id}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 border-b">{log.agent_name}</td>
                   <td className="px-4 py-3 border-b">{log.queue_name}</td>
                   <td className="px-4 py-3 border-b">{log.start_time ? format(new Date(log.start_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
@@ -102,6 +133,14 @@ const CallLogs = () => {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Render the modal when a call ID is selected */}
+      {selectedCallId && (
+        <CallDetailsModal 
+          callId={selectedCallId} 
+          onClose={handleCloseModal} 
+        />
       )}
     </div>
   );
