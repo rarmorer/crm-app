@@ -33,7 +33,6 @@ const Accounts = () => {
         const res = await fetch('/api/accounts');
         const data = await res.json();
         setAccounts(data.accounts || []);
-        console.log(accounts)
       } catch(err) {
         console.error('failed to fetch accounts', err);
       } finally {
