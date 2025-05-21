@@ -13,7 +13,7 @@ export const makeCall = (phoneNumber, callerId) => {
       data: {
         number: phoneNumber, // The phone number you want to dial
         callerId: callerId, // The caller ID (optional)
-        autoDial: true // Whether to dial automatically, default is true
+        autoDial: true 
       }
     };
     // Send the message to the iframe
