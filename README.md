@@ -1,36 +1,87 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Zoom CRM Demo App
 
-First, run the development server:
+## 📘 Introduction
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This is a demo CRM application built to showcase how to integrate Zoom's **Phone** and **Contact Center** using **Zoom Smart Embed**, **Zoom APIs**, and **OAuth** authentication.
+
+This application is designed as a reference project for developers building CRM tools that incorporate Zoom's communication platforms.
+
+### 🔀 Branch Behavior
+
+- **`main`**: Full working CRM with **hardcoded data** and mock Zoom behavior.
+- **`phone`**: Connects to **Zoom Phone** via Smart Embed and API calls, uses real **OAuth credentials**.
+- **`contact-center`**: Integrates **Zoom Contact Center**, API usage, and **voice authentication** powered by custom logic.
+
+## 🧰 Tech Stack
+
+- **Next.js** – React-based web framework
+- **React** – UI library
+- **TailwindCSS** – Utility-first CSS
+- **Zoom Smart Embed** – Zoom Phone & Contact Center interfaces
+- **Node.js API routes** – For backend token exchange and API access
+- **Admin-Level OAuth App** – Authorization mechanism for Zoom
+
+## 🚀 Running the App
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-org/zoom-crm-demo.git
+   cd zoom-crm-demo
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up your `.env` file (see below for OAuth instructions)
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 🔑 Zoom OAuth Setup
+
+1. Go to the [Zoom App Marketplace](https://marketplace.zoom.us/)
+2. Create an **Admin-level OAuth App**
+3. Under OAuth settings, add this **redirect URI**:
+   ```
+   https://your-ngrok-url.ngrok-free.app/api/auth/callback/zoom
+   ```
+4. Copy your Client ID and Client Secret into `.env`
+
+---
+
+## 🔄 Branch Features Overview
+
+| Branch           | Features                                                                 |
+|------------------|--------------------------------------------------------------------------|
+| `main`           | Fully working UI using hardcoded CRM data                                |
+| `phone`          | Zoom Phone integration with Smart Embed and real API credentials         |
+| `contact-center` | Zoom Contact Center with Smart Embed, APIs, and **voice authentication** |
+
+---
+
+## 🗂️ Project Structure
+
+```
+/pages
+  /api             → API routes for token handling and Zoom integration
+/components        → Reusable React components (e.g., VoiceAuth, ContactCard)
+/styles            → Tailwind styles and globals
+.env               → Environment config for OAuth
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🔒 Security Notice
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This is a **demo application** meant for learning and reference purposes. Never expose secrets in public repositories. Use secure storage for sensitive values in production deployments.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the **MIT License**.
