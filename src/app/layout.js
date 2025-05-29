@@ -4,9 +4,7 @@ import "./globals.css";
 import Sidebar from "../components/Sidebar";
 import SmartEmbed from "@/components/SmartEmbed";
 import EventLog from "@/components/EventLog";
-import { CallProvider
-
- } from "@/context/global-context";
+import { CallProvider} from "@/context/global-context";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
