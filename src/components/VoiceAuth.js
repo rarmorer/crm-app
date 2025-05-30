@@ -6,6 +6,7 @@ export default function VoiceAuth() {
   const [voicePrompt, setVoicePrompt] = useState(false);
   const [iseRecording, setIsRecording] = useState(false);
   
+  console.log(voicePrompt, 'status')
 
   useEffect(() => {
     const messageHandler = (event) => {
@@ -19,12 +20,7 @@ export default function VoiceAuth() {
           break;
         case 'zcc-call-ended':
           console.log('Call Ended:', data);
-          break;
-        case 'callAccepted':
-          console.log('Call Accepted:', data);
-          break;
-        case 'callRejected':
-          console.log('Call Rejected:', data);
+          
           break;
         default:
           console.log(`⚠️ Unhandled Smart Embed event: ${type}`, data);
@@ -59,7 +55,7 @@ export default function VoiceAuth() {
 
   return (
     <div>
-      {setVoicePrompt ? <div>jfsfaldjk</div> : null}
+      {voicePrompt ? alert('speak for voice authentication') : 'test'}
     </div>
   );
 }
