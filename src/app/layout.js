@@ -4,18 +4,7 @@ import "./globals.css";
 import Sidebar from "../components/Sidebar";
 import SmartEmbed from "@/components/SmartEmbed";
 import EventLog from "@/components/EventLog";
-import { CallProvider
-
- } from "@/context/global-context";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { CallProvider} from "@/context/global-context";
 
 export const metadata = {
   title: "Create Next App",
@@ -25,20 +14,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-           <div className="flex w-screen h-screen overflow-x-hidden">
-           <div className="w-[200px] shrink-0">
-        <Sidebar />
+      <body>
+        <div className="flex w-screen h-screen overflow-x-hidden">
+          <div className="w-[200px] shrink-0">
+          <Sidebar />
         </div>
         <div className="flex-1 min-w-0">
           <EventLog />
-        <AuthProvider>
-          <CallProvider>
-          <main>{children}</main>
-          </CallProvider>
-        </AuthProvider>
+          <AuthProvider>
+            <CallProvider>
+              <main>{children}</main>
+            </CallProvider>
+          </AuthProvider>
         </div>
         <div className="w-[420px] h-full overflow-hidden bg-white border-l border-gray-200 p-4">
         <SmartEmbed />

@@ -2,17 +2,6 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]/route"
 
 export async function GET(request) {
-  const session = await getServerSession(authOptions)
-
-  if (!session || !session.accessToken) {
-    return Response.json({ error: "Not authenticated" }, { status: 401 })
-  }
-
-   // Check if there was an error refreshing the token
-   if (session.error === "RefreshAccessTokenError") {
-    return Response.json({ error: "Your session has expired. Please sign in again." }, { status: 401 });
-  }
-
   const { searchParams } = new URL(request.url)
   let from = searchParams.get("from");
   let to = searchParams.get("to");
@@ -24,6 +13,12 @@ export async function GET(request) {
   }
 
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session || !session.accessToken) {
+      return Response.json({ error: "Not authenticated" }, { status: 401 })
+    }
+  
     let zoomUrl = 'https://api.zoom.us/v2/phone/call_history'
     const params = new URLSearchParams()
     if (from) params.append('from', from)
@@ -37,19 +32,12 @@ export async function GET(request) {
         'Content-Type': 'application/json'
       }
     })
-
-    if (!response.ok) {
-      // Handle specific error cases
-      if (response.status === 401) {
-        // Token might still be invalid despite refresh attempt
-        return Response.json({ error: "API authorization failed. Please sign in again." }, { status: 401 });
-      }
     
+    if (!response.ok) {
       const errText = await response.text();
       console.error(`Zoom API error: ${response.status}`, errText);
       throw new Error(`Zoom API error: ${response.status} - ${errText}`);
     }
-    
 
     const data = await response.json()
   

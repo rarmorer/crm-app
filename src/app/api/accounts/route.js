@@ -1,13 +1,12 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust if needed
-import { createPostponedAbortSignal } from "next/dist/server/app-render/dynamic-rendering";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"; 
 
-export async function GET(request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || !session.accessToken) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return Response.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     const response = await fetch('https://api.zoom.us/v2/phone/external_contacts', {
@@ -38,7 +37,7 @@ export async function GET(request) {
 
     return Response.json({accounts: results}); 
   } catch (error) {
-    console.error('Search error:', error);
+    console.error('Authorization error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

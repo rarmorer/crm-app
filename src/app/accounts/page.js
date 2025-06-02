@@ -1,10 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { PhoneIcon } from '@heroicons/react/24/solid';
 
-
-// Function to make a call using Zoom Smart Embed
+// Function to make a call using Zoom Smart Embed/click-to-call
 export const makeCall = (phoneNumber, callerId) => {
   const iframe = document.querySelector('iframe#zoom-embeddable-phone-iframe');
   if (iframe && iframe.contentWindow) {
@@ -48,7 +46,7 @@ const Accounts = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
-      <h2 className="text-lg font-semibold mb-4">Accounts</h2>
+      <h2 className="text-lg font-semibold mb-4">External Accounts</h2>
       <div className="overflow-x-auto rounded-lg shadow">
         <table className="min-w-full bg-white border border-gray-200 text-sm text-left rounded-lg overflow-hidden">
           <thead className="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">

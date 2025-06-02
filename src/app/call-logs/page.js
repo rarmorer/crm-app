@@ -17,7 +17,7 @@ const CallLogs = () => {
     if (fromDate && toDate) {
       setLoading(true);
       try {
-        const res = await fetch(`/api/call-logs?from=${fromDate}&to=${toDate}`);
+        const res = await fetch(`/api/call-history?from=${fromDate}&to=${toDate}`);
         const data = await res.json();
         setLogs(data.interactions || []);
       } catch (err) {
