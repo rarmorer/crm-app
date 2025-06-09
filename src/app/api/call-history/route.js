@@ -43,12 +43,12 @@ export async function GET(request) {
   
     const formatted = data.call_logs.map(log => ({
       id: log.id,
-      agent_name: log.owner_name || 'N/A',
-      queue_name: log.queue_name || 'N/A',
+      direction: log.direction,
+      connect_type: log.connect_type,
       start_time: log.start_time,
       end_time: log.end_time,
       duration: log.duration,
-      recording_url: log.recording_file_path || null
+      recording_status: log.recording_status
     }))
 
     return Response.json({ interactions: formatted })

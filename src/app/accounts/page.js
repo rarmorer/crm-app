@@ -55,6 +55,7 @@ const Accounts = () => {
               <th className="px-4 py-3 border-b">Name</th>
               <th className="px-4 py-3 border-b">Email</th>
               <th className="px-4 py-3 border-b">Phone Number</th>
+              <th className="px-4 py-3 border-b">Description</th>
               <th className="px-4 py-3 border-b">Status</th>
             </tr>
           </thead>
@@ -70,6 +71,7 @@ const Accounts = () => {
       >
         {account.phoneNumber}
       </td>
+      <td className="px-4 py-3 border-b text-gray-500">{account.description}</td>
       <td className="px-4 py-3 border-b">
         <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${account.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
           {account.status}

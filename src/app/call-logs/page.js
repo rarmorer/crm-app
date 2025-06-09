@@ -92,8 +92,8 @@ const CallLogs = () => {
             <thead className="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
               <tr>
                 <th className="px-4 py-3 border-b">Call ID</th>
-                <th className="px-4 py-3 border-b">Agent</th>
-                <th className="px-4 py-3 border-b">Queue</th>
+                <th className="px-4 py-3 border-b">Direction</th>
+                <th className="px-4 py-3 border-b">Connect type</th>
                 <th className="px-4 py-3 border-b">Start Time</th>
                 <th className="px-4 py-3 border-b">End Time</th>
                 <th className="px-4 py-3 border-b">Duration</th>
@@ -111,23 +111,12 @@ const CallLogs = () => {
                       {log.id}
                     </button>
                   </td>
-                  <td className="px-4 py-3 border-b">{log.agent_name}</td>
-                  <td className="px-4 py-3 border-b">{log.queue_name}</td>
+                  <td className="px-4 py-3 border-b">{log.direction}</td>
+                  <td className="px-4 py-3 border-b">{log.connect_type}</td>
                   <td className="px-4 py-3 border-b">{log.start_time ? format(new Date(log.start_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
                   <td className="px-4 py-3 border-b">{log.end_time ? format(new Date(log.end_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
                   <td className="px-4 py-3 border-b">{Math.floor(log.duration / 60)} min</td>
-                  <td className="px-4 py-3 border-b">
-                    {log.recording_url ? (
-                      <a
-                        href={log.recording_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline"
-                      >
-                        Listen
-                      </a>
-                    ) : ('N/A')}
-                  </td>
+                  <td className="px-4 py-3 border-b">{log.recording_status}</td>
                 </tr>
               ))}
             </tbody>

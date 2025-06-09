@@ -34,7 +34,7 @@ This application is designed as a reference project for developers building CRM 
    ```bash
    npm install
    ```
-3. Set up your `.env` file (see below for OAuth instructions)
+3. Copy `.env.example` to a `.env` file (see below for OAuth instructions)
 4. Start the development server:
    ```bash
    npm run dev
@@ -51,6 +51,23 @@ This application is designed as a reference project for developers building CRM 
    https://your-ngrok-url.ngrok-free.app/api/auth/callback/zoom
    ```
 4. Copy your Client ID and Client Secret into `.env`
+5. Add the following scopes when integrating with Zoom Phone
+   ```
+   phone:read:list_call_logs:admin
+   phone:read:call_log:admin
+   phone:read:list_external_contacts:admin
+   user:read:user:admin (This scope needs to be added for you to be able to authorize your app with Oauth using NextAuth.js library)
+   ```
+6. Save your changes
+
+
+---
+## Configure Phone Smart Embed
+
+1. Head to the Zoom Phone Smart Embed app in the [Zoom App Marketplace](https://marketplace.zoom.us/apps/jnMbv3s2TaCBYMFz5yvzkA)
+2. Add a the app for yourself, scroll down to the 'Manage' section and select 'Configure App'
+3. Add the 'redirect URI' you used the configuration of your app and save the changes
+
 
 ---
 
@@ -85,3 +102,5 @@ This is a **demo application** meant for learning and reference purposes. Never 
 ## 📄 License
 
 This project is licensed under the **MIT License**.
+
+Use of this sample app is subject to our [Terms of Use.](https://www.zoom.com/en/trust/legal/zoom-api-license-and-tou/#:~:text=You%20agree%20not%20to%20use,of%20Zoom's%20services%20or%20software%3B)

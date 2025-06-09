@@ -32,6 +32,7 @@ export async function GET() {
       name: user.name,
       email: user.email,
       phoneNumber: user.phone_numbers && user.phone_numbers.length > 0 ? user.phone_numbers[0]: 'No phone number',
+      description: user.description,
       status: user.status
     }));
 
