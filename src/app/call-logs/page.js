@@ -5,44 +5,66 @@ import { formatISO, format } from "date-fns";
 import { useCall } from "@/context/global-context";
 import CallDetailsModal from "@/components/CallDetailsModal"; // Import the existing component
 
+// Hardcoded call data
+const calls = [
+  {
+    id: 'abc123',
+    agent_name: 'Jane Doe',
+    queue_name: 'Support',
+    start_time: '2025-06-08T10:00:00Z',
+    end_time: '2025-06-08T10:15:00Z',
+    duration: 900,
+    recording_url: 'https://example.com/recording1.mp3',
+  },
+  {
+    id: 'def456',
+    agent_name: 'John Smith',
+    queue_name: 'Sales',
+    start_time: '2025-06-08T11:00:00Z',
+    end_time: '2025-06-08T11:05:00Z',
+    duration: 300,
+    recording_url: null,
+  },
+];
+
 const CallLogs = () => {
-  const { calls } = useCall();
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const { calls } = useCall();
+  const [logs, setLogs] = useState(calls);
+  const [loading, setLoading] = useState(false);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [selectedCallId, setSelectedCallId] = useState(null); // Add state for selected call ID
 
-  const handleFilter = async () => {
-    if (fromDate && toDate) {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/call-logs?from=${fromDate}&to=${toDate}`);
-        const data = await res.json();
-        setLogs(data.interactions || []);
-      } catch (err) {
-        console.error("Failed to fetch filtered logs", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
+  // const handleFilter = async () => {
+  //   if (fromDate && toDate) {
+  //     setLoading(true);
+  //     try {
+  //       const res = await fetch(`/api/call-logs?from=${fromDate}&to=${toDate}`);
+  //       const data = await res.json();
+  //       setLogs(data.interactions || []);
+  //     } catch (err) {
+  //       console.error("Failed to fetch filtered logs", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchInitialLogs = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/call-logs');
-        const data = await res.json();
-        setLogs(data.interactions || []);
-      } catch (err) {
-        console.error("Failed to load initial logs", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchInitialLogs();
-  }, []);
+  // useEffect(() => {
+  //   const fetchInitialLogs = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const res = await fetch('/api/call-logs');
+  //       const data = await res.json();
+  //       setLogs(data.interactions || []);
+  //     } catch (err) {
+  //       console.error("Failed to load initial logs", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchInitialLogs();
+  // }, []);
 
   // Add handlers for opening and closing the modal
   const handleCallClick = (callId) => {
@@ -76,12 +98,12 @@ const CallLogs = () => {
             className="border px-2 py-1 rounded"
           />
         </div>
-        <button
+        {/* <button
           onClick={handleFilter}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Filter
-        </button>
+        </button> */}
       </div>
 
       {loading ? (

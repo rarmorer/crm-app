@@ -4,7 +4,6 @@ import Earnings from "@/components/Earnings";
 import Calls from "@/components/Call-log";
 import SearchBar from "@/components/Searchbar";
 import { useEffect } from "react";
-import VoiceAuth from "@/components/VoiceAuth";
 
 const HomePage = () => {
 
@@ -33,7 +32,6 @@ const HomePage = () => {
         <main className="flex flex-col space-y-8 ml-0 w-[800px]">
           <Earnings />
           <Calls />  
-          <VoiceAuth/>
         </main>
       </div>
     </div>

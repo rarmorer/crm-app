@@ -9,19 +9,21 @@ const Calls = () => {
   
   const [loading, setLoading] = useState(true);
 
+  /*
   useEffect(() => {
     const todayLogs = calls.filter(log => {
       const startTime = new Date(log.start_time);
       return isToday(startTime);
     });
 
-    setLogs(todayLogs);
+    // setLogs(todayLogs);
     setLoading(false);
   }, [calls]);
+  */
   
-  if (loading) { 
-    return <p className="text-center text-gray-500">Loading call logs...</p>
-  }
+  // if (loading) { 
+  //   return <p className="text-center text-gray-500">Loading call logs...</p>
+  // }
 
   
   return (
@@ -38,6 +40,7 @@ const Calls = () => {
             <th className="px-4 py-2">Recording</th>
           </tr>
         </thead>
+        {/*
         <tbody>
           {logs.map((log) => (
             <tr key={log.id} className="border-b hover:bg-gray-50">
@@ -60,6 +63,49 @@ const Calls = () => {
               </td>
             </tr>
           ))}
+        </tbody>
+        */}
+        <tbody>
+          <tr className="border-b hover:bg-gray-50">
+            <td className="px-4 py-2">Jane Doe</td>
+            <td className="px-4 py-2">Support</td>
+            <td className="px-4 py-2">6/08/2025, 10:00 AM</td>
+            <td className="px-4 py-2">6/08/2025, 10:15 AM</td>
+            <td className="px-4 py-2">15 min</td>
+            <td className="px-4 py-2"><a href="#" className="text-blue-600 underline">Listen</a></td>
+          </tr>
+          <tr className="border-b hover:bg-gray-50">
+            <td className="px-4 py-2">John Smith</td>
+            <td className="px-4 py-2">Sales</td>
+            <td className="px-4 py-2">6/08/2025, 11:00 AM</td>
+            <td className="px-4 py-2">6/08/2025, 11:10 AM</td>
+            <td className="px-4 py-2">10 min</td>
+            <td className="px-4 py-2"><a href="#" className="text-blue-600 underline">Listen</a></td>
+          </tr>
+          <tr className="border-b hover:bg-gray-50">
+            <td className="px-4 py-2">Emily Chan</td>
+            <td className="px-4 py-2">Tech Support</td>
+            <td className="px-4 py-2">6/08/2025, 1:30 PM</td>
+            <td className="px-4 py-2">6/08/2025, 1:50 PM</td>
+            <td className="px-4 py-2">20 min</td>
+            <td className="px-4 py-2"><a href="#" className="text-blue-600 underline">Listen</a></td>
+          </tr>
+          <tr className="border-b hover:bg-gray-50">
+            <td className="px-4 py-2">Carlos Vega</td>
+            <td className="px-4 py-2">Billing</td>
+            <td className="px-4 py-2">6/08/2025, 2:00 PM</td>
+            <td className="px-4 py-2">6/08/2025, 2:07 PM</td>
+            <td className="px-4 py-2">7 min</td>
+            <td className="px-4 py-2">N/A</td>
+          </tr>
+          <tr className="border-b hover:bg-gray-50">
+            <td className="px-4 py-2">Leila Noor</td>
+            <td className="px-4 py-2">Customer Success</td>
+            <td className="px-4 py-2">6/08/2025, 3:15 PM</td>
+            <td className="px-4 py-2">6/08/2025, 3:25 PM</td>
+            <td className="px-4 py-2">10 min</td>
+            <td className="px-4 py-2"><a href="#" className="text-blue-600 underline">Listen</a></td>
+          </tr>
         </tbody>
       </table>
     </div>
