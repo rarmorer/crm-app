@@ -10,9 +10,9 @@ This application is designed as a reference project for developers building CRM 
 
 ### 🔀 Branch Behavior
 
-- **`main`**: Full working CRM with **hardcoded data** and mock Zoom behavior.
+- **`main`**: Full working CRM with **hardcoded data**, an embedded Softphone using Zoom Phone, and mock Zoom behavior.
 - **`phone`**: Connects to **Zoom Phone** via Smart Embed and API calls, uses real **OAuth credentials**.
-- **`contact-center`**: Integrates **Zoom Contact Center**, API usage, and **voice authentication** powered by custom logic.
+- **`contact-center`**: Integrates **Zoom Contact Center**, API usage, and **OAuth credentials**
 
 ## 🧰 Tech Stack
 
@@ -27,9 +27,12 @@ This application is designed as a reference project for developers building CRM 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-org/zoom-crm-demo.git
+   git clone https://github.com/your-org/zoom-crm-demo.git 
+   *to clone a specific branch, run the command
    cd zoom-crm-demo
    ```
+   *Note: To clone a specific branch, run the command `git clone --branch <branch-name> --single-branch <repo-url>` in your terminal. Otherwise, clone the entire repo and switch to the respective branch based on your product pereference*
+
 2. Install dependencies:
    ```bash
    npm install
@@ -51,24 +54,39 @@ This application is designed as a reference project for developers building CRM 
    https://your-ngrok-url.ngrok-free.app/api/auth/callback/zoom
    ```
 4. Copy your Client ID and Client Secret into `.env`
-5. Add the following scopes when integrating with Zoom Phone
+5. To acess the phone APIs used in this app, add the following scopes when integrating:
    ```
    phone:read:list_call_logs:admin
    phone:read:call_log:admin
    phone:read:list_external_contacts:admin
    user:read:user:admin (This scope needs to be added for you to be able to authorize your app with Oauth using NextAuth.js library)
    ```
-6. Save your changes
-
+6. To access the contact center APIs, add the following scopes when integrating:
+   ```
+   contact_center_contact:read:admin
+   contact_center_report:read:admin
+   ```
+7. Save your changes
+*Please note that the routes used in this app were selected for demo purposes to fulfill specific needs of a CRM. When working on your cloned repo, use whichever routes are deemed necessary*
 
 ---
-## Configure Phone Smart Embed
+
+## 📞 Configuring Smart Embed
+
+This application makes use of Smart Embed for soft phone use. Both Contact Center and Phone have Smart Embed available. Follow the respective steps, based on which you are you working with, to configure the application with your account for use. 
+
+### Phone Set up 
 
 1. Head to the Zoom Phone Smart Embed app in the [Zoom App Marketplace](https://marketplace.zoom.us/apps/jnMbv3s2TaCBYMFz5yvzkA)
 2. Add a the app for yourself, scroll down to the 'Manage' section and select 'Configure App'
-3. Add the 'redirect URI' you used the configuration of your app and save the changes
+3. Add the 'redirect URI' you used in the configuration of your app and save the changes (a created ngrok link, for example)
+** For further explanation, see our [blog post](https://developers.zoom.us/blog/phone-smart-embed-reactapp-part1/) on the process. 
 
-
+### Contact Center Set up 
+1. Log in to your profile at zoom.us/myhome and head to the "Contact Center Management" tab on the left menu
+2. Scroll to integrations, and create a new one for your application. Here, you'll add in the home URL of the app where Smart Embed we'll be used (a created ngrok link, for example)
+3. Back in your "Contact Center Management" menu, select the user whose credentials are being used within the app, and under 'Client Integration', add the previously created integration
+ 
 ---
 
 ## 🔄 Branch Features Overview
@@ -77,7 +95,7 @@ This application is designed as a reference project for developers building CRM 
 |------------------|--------------------------------------------------------------------------|
 | `main`           | Fully working UI using hardcoded CRM data                                |
 | `phone`          | Zoom Phone integration with Smart Embed and real API credentials         |
-| `contact-center` | Zoom Contact Center with Smart Embed, APIs, and **voice authentication** |
+| `contact-center` | Zoom Contact Center with Smart Embed, and real API credentials           |
 
 ---
 
