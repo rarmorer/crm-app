@@ -5,7 +5,7 @@ import { useCall } from "@/context/global-context";
 
 const Calls = () => {
   const [logs, setLogs] = useState([]);
-  const {calls, setCalls} = useCall();
+  const {calls} = useCall();
   
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +17,7 @@ const Calls = () => {
 
     setLogs(todayLogs);
     setLoading(false);
-  }, [calls]);
+  }, []);
   
   if (loading) { 
     return <p className="text-center text-gray-500">Loading call logs...</p>

@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { formatISO, format } from "date-fns";
-import { useCall } from "@/context/global-context";
+import { CallProvider, useCall } from "@/context/global-context";
 import CallDetailsModal from "@/components/CallDetailsModal"; // Import the existing component
 
 const CallLogs = () => {
-  const { calls } = useCall();
+  const { calls, setCalls } = useCall();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fromDate, setFromDate] = useState('');
@@ -25,16 +25,17 @@ const CallLogs = () => {
       } finally {
         setLoading(false);
       }
-    }
+    } 
   };
 
   useEffect(() => {
     const fetchInitialLogs = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/call-logs');
+        const res = await fetch('/api/call-history');
         const data = await res.json();
         setLogs(data.interactions || []);
+        setCalls(data.interactions)
       } catch (err) {
         console.error("Failed to load initial logs", err);
       } finally {
@@ -93,11 +94,9 @@ const CallLogs = () => {
               <tr>
                 <th className="px-4 py-3 border-b">Call ID</th>
                 <th className="px-4 py-3 border-b">Direction</th>
-                <th className="px-4 py-3 border-b">Connect type</th>
                 <th className="px-4 py-3 border-b">Start Time</th>
                 <th className="px-4 py-3 border-b">End Time</th>
                 <th className="px-4 py-3 border-b">Duration</th>
-                <th className="px-4 py-3 border-b">Recording</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
@@ -112,11 +111,9 @@ const CallLogs = () => {
                     </button>
                   </td>
                   <td className="px-4 py-3 border-b">{log.direction}</td>
-                  <td className="px-4 py-3 border-b">{log.connect_type}</td>
                   <td className="px-4 py-3 border-b">{log.start_time ? format(new Date(log.start_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
                   <td className="px-4 py-3 border-b">{log.end_time ? format(new Date(log.end_time), "yyyy-MM-dd HH:mm:ss") : 'N/A'}</td>
                   <td className="px-4 py-3 border-b">{Math.floor(log.duration / 60)} min</td>
-                  <td className="px-4 py-3 border-b">{log.recording_status}</td>
                 </tr>
               ))}
             </tbody>

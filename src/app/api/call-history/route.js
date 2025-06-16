@@ -19,7 +19,7 @@ export async function GET(request) {
       return Response.json({ error: "Not authenticated" }, { status: 401 })
     }
   
-    let zoomUrl = 'https://api.zoom.us/v2/phone/call_history'
+    let zoomUrl = 'https://api.zoom.us/v2/contact_center/engagements'
     const params = new URLSearchParams()
     if (from) params.append('from', from)
     if (to) params.append('to', to)
@@ -39,17 +39,35 @@ export async function GET(request) {
       throw new Error(`Zoom API error: ${response.status} - ${errText}`);
     }
 
-    const data = await response.json()
-  
-    const formatted = data.call_logs.map(log => ({
-      id: log.id,
-      direction: log.direction,
-      connect_type: log.connect_type,
-      start_time: log.start_time,
-      end_time: log.end_time,
-      duration: log.duration,
-      recording_status: log.recording_status
-    }))
+    const data = await response.json();
+    const voiceEngagements = data.engagements?.filter(e =>
+      e.channels?.some(c => c.channel === 'voice')
+    ) || [];
+    // const formatted = data.call_logs.map(log => ({
+    //   id: log.id,
+    //   direction: log.direction,
+    //   connect_type: log.connect_type,
+    //   start_time: log.start_time,
+    //   end_time: log.end_time,
+    //   duration: log.duration,
+    //   recording_status: log.recording_status
+    // }))
+    const formatted = voiceEngagements.map(log => {
+      const consumer = log.consumers?.[0];
+      const name = consumer?.consumer_display_name || 'Unknown';
+      const number = consumer?.consumer_number || '';
+      const formattedNumber = number
+        ? `(${number.slice(-10, -7)})${number.slice(-7, -4)}-${number.slice(-4)}`
+        : '';
+
+      return {
+        id: `${name}, ${formattedNumber}`,
+        direction: log.direction,
+        start_time: log.start_time,
+        end_time: log.end_time,
+        duration: log.duration,
+      };
+    });
 
     return Response.json({ interactions: formatted })
   } catch (err) {
