@@ -1,7 +1,7 @@
 "use client"
 
 import Earnings from "@/components/Earnings";
-import Calls from "@/components/CallHistory";
+import Calls from "@/components/TodaysLogs";
 import SearchBar from "@/components/Searchbar";
 import { useEffect } from "react";
 import { useCall } from "@/context/global-context";

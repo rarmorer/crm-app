@@ -1,5 +1,6 @@
 "use client"
 
+import SearchBar from "@/components/Searchbar";
 import React, { useState, useEffect } from "react";
 
 // Function to make a call using Zoom Smart Embed/click-to-call
@@ -22,30 +23,36 @@ export const makeCall = (phoneNumber, callerId) => {
 };
 
 const Accounts = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [loading, isLoading] = useState(true);
-
-  useEffect(() => {
-    const getAccounts = async () => {
-      try {
-        const res = await fetch('/api/accounts');
-        const data = await res.json();
-        setAccounts(data.accounts || []);
-      } catch(err) {
-        console.error('failed to fetch accounts', err);
-      } finally {
-        isLoading(false);
-      }
+  const accounts = [
+    {
+      id: '1',
+      name: 'Rehema Armorer',
+      email: 'rehema@example.com',
+      phoneNumber: '+15551234567',
+      description: 'Senior Account Executive',
+      status: 'Active',
+    },
+    {
+      id: '2',
+      name: 'Jane Doe',
+      email: 'jane.doe@example.com',
+      phoneNumber: '+15559876543',
+      description: 'Technical Support Manager',
+      status: 'Inactive',
+    },
+    {
+      id: '3',
+      name: 'John Smith',
+      email: 'john.smith@example.com',
+      phoneNumber: '+15551112233',
+      description: 'Solutions Architect',
+      status: 'Active',
     }
-    getAccounts();
-  }, []);
-  
-  if (loading) { 
-    return <p className="text-center text-gray-500">Loading Accounts...</p>
-  }
+  ];
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
+      <SearchBar/>
       <h2 className="text-lg font-semibold mb-4">External Accounts</h2>
       <div className="overflow-x-auto rounded-lg shadow">
         <table className="min-w-full bg-white border border-gray-200 text-sm text-left rounded-lg overflow-hidden">

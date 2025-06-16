@@ -1,29 +1,37 @@
 "use client"
 import React, {useState, useEffect} from "react";
-import { isToday } from "date-fns";
-import { useCall } from "@/context/global-context";
 
 const Calls = () => {
-  const [logs, setLogs] = useState([]);
-  const {calls, setCalls} = useCall();
-  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const todayLogs = calls.filter(log => {
-      const startTime = new Date(log.start_time);
-      return isToday(startTime);
-    });
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, []);
 
-    setLogs(todayLogs);
-    setLoading(false);
-  }, [calls]);
-  
-  if (loading) { 
-    return <p className="text-center text-gray-500">Loading call logs...</p>
-  }
+  const todaysLogs = [
+    {
+      id: 1,
+      agent_name: "John Doe",
+      queue_name: "Support",
+      start_time: new Date().toISOString(),
+      end_time: new Date(Date.now() + 600000).toISOString(), // +10 minutes
+      duration: 600,
+      recording_url: "https://example.com/recording1.mp3"
+    },
+    {
+      id: 2,
+      agent_name: "Jane Smith",
+      queue_name: "Sales",
+      start_time: new Date().toISOString(),
+      end_time: new Date(Date.now() + 300000).toISOString(), // +5 minutes
+      duration: 300,
+      recording_url: ""
+    }
+  ];
 
-  
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4 min-w-0">
       <h2 className="text-lg font-semibold text-gray-700 mb-4">Daily Call Logs</h2>
@@ -39,7 +47,7 @@ const Calls = () => {
           </tr>
         </thead>
         <tbody>
-          {logs.map((log) => (
+          {todaysLogs.map((log) => (
             <tr key={log.id} className="border-b hover:bg-gray-50">
               <td className="px-4 py-2">{log.agent_name}</td>
               <td className="px-4 py-2">{log.queue_name}</td>

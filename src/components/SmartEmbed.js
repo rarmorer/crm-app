@@ -1,3 +1,5 @@
+//page configured for Zoom Phone
+
 export default function SmartEmbed() {
   return (
     <div className="w-full max-w-md mx-auto p-4">

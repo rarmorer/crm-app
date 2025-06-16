@@ -12,7 +12,7 @@ const navItems = [
   { label: 'Dashboard', icon: HomeIcon, href: '/' },
   { label: 'Accounts', icon: UserGroupIcon, href: '/accounts' },
   { label: 'Call Logs', icon: PhoneIcon, href: '/call-logs' },
-  { label: 'Instructions', icon: InformationCircleIcon, href: '/README.md' },
+  { label: 'Instructions', icon: InformationCircleIcon, href: '/instructions' },
 ];
 
 const Sidebar = () => {

@@ -93,7 +93,7 @@ This application makes use of Smart Embed for soft phone use. Both Contact Cente
 
 | Branch           | Features                                                                 |
 |------------------|--------------------------------------------------------------------------|
-| `main`           | Fully working UI using hardcoded CRM data                                |
+| `main`           | Fully working UI using hardcoded CRM data & **Zoom Phone** Smartphone    |
 | `phone`          | Zoom Phone integration with Smart Embed and real API credentials         |
 | `contact-center` | Zoom Contact Center with Smart Embed, and real API credentials           |
 

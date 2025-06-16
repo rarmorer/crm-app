@@ -9,13 +9,7 @@ const EventLog = () => {
   // Define valid event types directly inside the component
   const validEventTypes = [
     "zp-call-ringing-event",
-    //"zp-call-connected-event",
-    //"zp-call-ended-event",
     "zp-call-log-completed-event",
-    //"zp-call-recording-completed-event",
-    //"zp-call-voicemail-received-event",
-    //"zp-sms-log-event",
-    //"zp-save-log-event",
   ];
 
   // Function to check if the event type is valid
